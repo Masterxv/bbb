@@ -2,7 +2,7 @@ const axios = require('axios');
 const moment = require('moment');
 
 const BINANCE_URL = "https://testnet.binance.vision/api/v3";
-const WHATSAPP_API_URL = "https://dls4wn-5001.csb.app/send-message";
+const WHATSAPP_API_URL = "https://2m6sk8-5001.csb.app/send-message";
 const PHONE_NUMBER = "919701779143";
 const INTERVALS = ["1m", "5m", "15m", "30m", "1h", "4h"];
 
@@ -10,16 +10,32 @@ async function getTopSymbols(limit = 100, customSymbols = null) {
   try {
     const response = await axios.get(`${BINANCE_URL}/ticker/24hr`);
     const data = response.data;
-    const usdtPairs = data.filter(x => x.symbol.endsWith('USDT'));
-    const sortedPairs = usdtPairs.sort((a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume));
+    const usdtPairs = data.filter(x => x.symbol.endsWith('USDT') && !['USDCUSDT', 'FDUSDUSDT'].includes(x.symbol));
+    
+    // Sort by price change percentage
+    const sortedByChange = [...usdtPairs].sort((a, b) => parseFloat(b.priceChangePercent) - parseFloat(a.priceChangePercent));
+    
+    // Get top 5 gainers and losers
+    const topGainers = sortedByChange.slice(0, 5);
+    const topLosers = sortedByChange.slice(-5).reverse();
+    
+    console.log("\n=== Top Gainers ===");
+    topGainers.forEach(coin => {
+      console.log(`${coin.symbol}: +${parseFloat(coin.priceChangePercent).toFixed(2)}%`);
+    });
+    
+    console.log("\n=== Top Losers ===");
+    topLosers.forEach(coin => {
+      console.log(`${coin.symbol}: ${parseFloat(coin.priceChangePercent).toFixed(2)}%`);
+    });
 
-    if (customSymbols) {
-      return sortedPairs
-        .filter(pair => customSymbols.includes(pair.symbol))
-        .slice(0, limit)
-        .map(pair => pair.symbol);
-    }
-    return sortedPairs.slice(0, limit).map(pair => pair.symbol);
+    // Combine custom symbols with top gainers
+    const combinedSymbols = new Set([
+      ...(customSymbols || []),
+      ...topGainers.map(coin => coin.symbol)
+    ]);
+
+    return Array.from(combinedSymbols);
   } catch (error) {
     console.error("Error fetching top symbols:", error);
     return [];
@@ -116,7 +132,7 @@ async function sendAlert(message) {
 }
 
 async function main() {
-  const customCoins = ["BTCUSDT", "ETHUSDT", "KDAUSDT", "SOLUSDT", "OMUSDT", "PEOPLEUSDT", "PNUTUSDT", "SHELLUSDT", "WIFUSDT", "BOMEUSDT"];
+  const customCoins = ["BTCUSDT", "ETHUSDT", "KDAUSDT", "SOLUSDT", "OMUSDT"];
   
   while (true) {
     console.log("\n=== Enhanced Supertrend Alert System ===");
