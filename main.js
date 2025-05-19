@@ -16,8 +16,8 @@ async function getTopSymbols(limit = 100, customSymbols = null) {
     const sortedByChange = [...usdtPairs].sort((a, b) => parseFloat(b.priceChangePercent) - parseFloat(a.priceChangePercent));
     
     // Get top 5 gainers and losers
-    const topGainers = sortedByChange.slice(0, 5);
-    const topLosers = sortedByChange.slice(-5).reverse();
+    const topGainers = sortedByChange.slice(0, 10);
+    const topLosers = sortedByChange.slice(-10).reverse();
     
     console.log("\n=== Top Gainers ===");
     topGainers.forEach(coin => {
