@@ -116,7 +116,7 @@ async function sendAlert(message) {
 }
 
 async function main() {
-  const customCoins = ["BTCUSDT", "ETHUSDT", "KDAUSDT", "SOLUSDT", "OMUSDT"];
+  const customCoins = ["BTCUSDT", "ETHUSDT", "KDAUSDT", "SOLUSDT", "OMUSDT", "PEOPLEUSDT", "PNUTUSDT", "SHELLUSDT", "WIFUSDT", "BOMEUSDT"];
   
   while (true) {
     console.log("\n=== Enhanced Supertrend Alert System ===");
