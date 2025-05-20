@@ -2,7 +2,7 @@ const axios = require('axios');
 const moment = require('moment');
 
 const BINANCE_URL = "https://testnet.binance.vision/api/v3";
-const WHATSAPP_API_URL = "https://2m6sk8-5001.csb.app/send-message";
+const WHATSAPP_API_URL = "https://x5lvzg-5001.csb.app/send-message";
 const PHONE_NUMBER = "919701779143";
 const INTERVALS = ["1m", "5m", "15m", "30m", "1h", "4h"];
 
